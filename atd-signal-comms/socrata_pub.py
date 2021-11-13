@@ -11,7 +11,7 @@ import os
 import boto3
 import sodapy
 
-from config import CONFIG, DATE_FORMAT_FILE
+from config import DATE_FORMAT_FILE
 from settings import SOCRATA_RESOURCE_ID
 import utils
 
@@ -164,13 +164,16 @@ def main(device_type, env, start, end):
     if not files_to_download:
         return
 
+    # publish to socrata
+    resource_id = SOCRATA_RESOURCE_ID[env]
+
     socrata_client = get_socrata_client()
 
     for key in files_to_download:
         json_file = download_file(client, key)
         rows = json.loads(json_file.decode())
         logger.debug(f"Upserting {key} to Socrata...")
-        socrata_client.upsert(SOCRATA_RESOURCE_ID, rows)
+        socrata_client.upsert(resource_id, rows)
 
     return
 
