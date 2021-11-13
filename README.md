@@ -10,6 +10,7 @@ This repository hosts tools for logging the status of the various devices on the
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#scripts)
+- [Development](#development)
 
 ## Design
 
@@ -134,3 +135,8 @@ $ socrata_pub.py camera -e dev --start 2021-01-01 --end 2021-10-31 -v
 - `--start`: UTC date (format: `YYYY-MM-DD`) of earliest records to be fetched. Defaults to the current date.
 - `--end`: UTC date (format: `YYYY-MM-DD`) of oldest records to be fetched. Defaults to the current date.
 - `-v`, `--verbose`: Sets logger to `DEBUG` level
+
+
+## Development
+
+A new Docker image is pushed to Docker hub via Github action on any push to `production` or `staging`.
