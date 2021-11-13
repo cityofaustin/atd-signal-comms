@@ -24,13 +24,17 @@ or Docker
 $ docker build -t atd-signal-comms .
 ```
 
+## Design
+
+Todo: file format. idempotency.
+
 ## Configuration
 
 Each device type to be pinged must have an entry defined in `config.CONFIG`.
 
 - `device_type`: A unique `str` identifier the device type.
 - `container`: A Knack object or view key from which device asset records will be fetched.
-- `fields`: a `dict` of field mappings which will be used to translate Knack fields to canonical field names. At a minimum, all devices must have an `ip_addess` and `device_id` field. See `config.SCHEMA` for requirements of field values.
+- `fields`: a `dict` of field mappings which will be used to translate Knack fields to canonical field names. At a minimum, all devices must have an `ip_address` and `device_id` field. See `config.SCHEMA` for requirements of field values.
 
 ```python
     # config.py
