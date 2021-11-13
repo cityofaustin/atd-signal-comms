@@ -6,9 +6,14 @@ Tools for logging the status of HTTP-enabled devices on the traffic signals netw
 
 ## Contents
 
+- [Design](#design)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#scripts)
+
+## Design
+
+Todo: file format. idempotency.
 
 ## Installation
 
@@ -21,12 +26,8 @@ $ pip install -r requirements.txt
 or Docker
 
 ```shell
-$ docker build -t atd-signal-comms .
-```
+$ docker build -t atd-signal-comms .```
 
-## Design
-
-Todo: file format. idempotency.
 
 ## Configuration
 
