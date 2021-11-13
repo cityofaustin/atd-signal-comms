@@ -1,6 +1,6 @@
 # atd-signal-comms
 
-Tools for logging the status of HTTP-enabled devices on the traffic signals network and publishing the results on the City's [Open Data Portal](data.austintexas.gov). 
+Tools for logging the status of HTTP-enabled devices on the traffic signals network and publishing the results on the City's [Open Data Portal](data.austintexas.gov).
 
 ![process flow](flow.jpg)
 
@@ -26,8 +26,8 @@ $ pip install -r requirements.txt
 or Docker
 
 ```shell
-$ docker build -t atd-signal-comms .```
-
+$ docker build -t atd-signal-comms .
+```
 
 ## Configuration
 
@@ -65,8 +65,6 @@ The following environment variables are required:
 - `SOCRATA_API_KEY_ID`: The Socrata API key of the account you need to access
 - `SOCRATA_API_KEY_SECRET`: The Socrata API key secret
 - `SOCRATA_APP_TOKEN`: The Socrata app token
-
-
 
 ### Validation
 
