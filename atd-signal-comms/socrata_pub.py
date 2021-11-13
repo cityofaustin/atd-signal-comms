@@ -71,33 +71,31 @@ def date_range(date_min: datetime, date_max: datetime) -> list:
     Returns:
         list: a list of datetime objects included in the given min/max dates
     """
-    if not date_max:
-        date_max = datetime.now(timezone.utc)
     range_delta = date_max - date_min
     return [date_min + timedelta(days=i) for i in range(range_delta.days + 1)]
 
 
 def parse_date(
-    date_str: str, fmt: str = DATE_FORMAT_FILE, tzinfo: timezone = timezone.utc
+    date_str: str, fmt: str, tzinfo: timezone = timezone.utc
 ) -> datetime:
     """
     Args:
         date_str (str): an input date matching the given input format
-        fmt (str, optional): The formatting template. Defaults to DATE_FORMAT_FILE (YYYY-MM-DD).
+        fmt (str, optional): The formatting template.
         tzinfo (datetime.timezone, optional): The timezone of the input date. Defaults to timezone.utc.
 
     Raises:
         ValueError: If unable to parse date string
 
     Returns:
-        datetime.datetime: The datetime object or `None` if the input date is not a string
+        datetime.datetime: The datetime object.
     """
     try:
         return datetime.strptime(date_str, fmt).replace(tzinfo=tzinfo)
     except ValueError:
         raise ValueError(f"Unable to parse date '{date_str}' as YYYY-MM-DD")
     except TypeError:
-        return None
+        raise ValueError(f"Invalid date string input: {type(date_str)}")
 
 
 def get_bucket_prefixes(device_type: str, env: str, dates_todo: list) -> list:
@@ -136,8 +134,8 @@ def download_file(client, key):
 
 
 def main(device_type, env, start, end):
-    date_min = parse_date(start)
-    date_max = parse_date(end)
+    date_min = parse_date(start, DATE_FORMAT_FILE)
+    date_max = parse_date(end, DATE_FORMAT_FILE)
     dates_todo = date_range(date_min, date_max)
 
     logger.debug(
@@ -150,7 +148,7 @@ def main(device_type, env, start, end):
         for dt in dates_todo
     ]
 
-    # generate a list of bucket prefixes (folders) that would contain files in the range 
+    # generate a list of bucket prefixes (folders) that would contain files in the range
     bucket_prefixes = get_bucket_prefixes(device_type, env, dates_todo)
 
     logger.debug(
@@ -181,11 +179,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-d",
-        "--device-type",
+        dest="device_type",
         type=str,
         choices=utils.supported_device_types(),
-        required=True,
         help=f"The name of the device type",
     )
 
@@ -201,14 +197,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--start",
         type=str,
-        required=True,
-        help=f"Date (in UTC) of earliest records to be fetched (YYYY-MM-DD)",
+        default=datetime.now(timezone.utc).strftime(DATE_FORMAT_FILE),
+        help=f"Date (in UTC) of earliest records to be fetched (YYYY-MM-DD). Defaults to today",
     )
 
     parser.add_argument(
         "--end",
         type=str,
-        help=f"End (in UTC) of earliest records to be fetched YYYY-MM-DD)",
+        default=datetime.now(timezone.utc).strftime(DATE_FORMAT_FILE),
+        help=f"End (in UTC) of oldest records to be fetched YYYY-MM-DD). Defaults to today",
     )
 
     parser.add_argument(
