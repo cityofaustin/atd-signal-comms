@@ -100,7 +100,7 @@ def log_results(results):
 
 def validate_results(results):
     """Validate each result dict meets our schema definition.
-    
+
         Serves as a test to ensure our schema is always adhered to. A validation error would
         likely occur if a schema change was made to the source Knack container which resulted
         in invalid/missing data.

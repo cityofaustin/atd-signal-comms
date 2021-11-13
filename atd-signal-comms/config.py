@@ -1,6 +1,4 @@
-DATE_FORMAT_FILE = "%Y-%m-%d"
-DATE_FORMAT_SOCRATA = "%Y-%m-%dT%H:%M:%S"
-STATUS_CODES = {0: "no_attempts", 1: "online", -1: "timeout", -2: "invalid_hostname", -3: "unknown_error", }
+from settings import STATUS_CODES
 
 CONFIG = [
     {

@@ -11,8 +11,7 @@ import os
 import boto3
 import sodapy
 
-from config import DATE_FORMAT_FILE
-from settings import SOCRATA_RESOURCE_ID
+from settings import DATE_FORMAT_FILE, SOCRATA_RESOURCE_ID
 import utils
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
@@ -75,9 +74,7 @@ def date_range(date_min: datetime, date_max: datetime) -> list:
     return [date_min + timedelta(days=i) for i in range(range_delta.days + 1)]
 
 
-def parse_date(
-    date_str: str, fmt: str, tzinfo: timezone = timezone.utc
-) -> datetime:
+def parse_date(date_str: str, fmt: str, tzinfo: timezone = timezone.utc) -> datetime:
     """
     Args:
         date_str (str): an input date matching the given input format

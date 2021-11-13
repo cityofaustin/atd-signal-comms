@@ -2,7 +2,8 @@ import logging
 import sys
 
 import cerberus
-from config import CONFIG, DATE_FORMAT_FILE, SCHEMA
+from config import CONFIG, SCHEMA
+from settings import DATE_FORMAT_FILE
 
 
 def get_logger(name, level):
@@ -14,7 +15,6 @@ def get_logger(name, level):
     logger.addHandler(handler)
     logger.setLevel(level)
     return logger
-
 
 
 def get_validator():
@@ -40,4 +40,6 @@ def format_filename(*, device_type, env, dt):
     Returns:
         str: a path + filename to be used as the S3 bucket path
     """
-    return f"{env}/{device_type}/{dt.year}/{dt.month}/{dt.strftime(DATE_FORMAT_FILE)}.json"
+    return (
+        f"{env}/{device_type}/{dt.year}/{dt.month}/{dt.strftime(DATE_FORMAT_FILE)}.json"
+    )
