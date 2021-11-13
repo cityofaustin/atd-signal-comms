@@ -169,11 +169,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-d",
-        "--device-type",
+        dest="device_type",
         type=str,
         choices=utils.supported_device_types(),
-        required=True,
         help=f"The name of the device type",
     )
 
