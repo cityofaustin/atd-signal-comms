@@ -11,7 +11,7 @@ logger = logging.getLogger("__main__")
 
 
 class Device:
-    """A simple container for storing device attributes"""
+    """A container for a single http-enabled device."""
 
     __slots__ = [
         "id",
@@ -43,6 +43,18 @@ class Device:
         self.status_code = 0
 
     async def ping(self):
+        """Async (non-blocking) attempt to ping the device's IP address.
+
+        All exceptions are supressed and translated to the device's status_code
+        and status_desc attributes.
+
+        Side-effects:
+            - Set self.timestamp to the current time
+            - Set self.dellay to the ping delay in ms (if successful)
+            - Set self.status_code and self.status_desc accordingly
+        Returns:
+            int: the device's status code.
+        """
         logger.debug(f"Ping {self.ip_address}")
         self.timestamp = datetime.now(timezone.utc).strftime(DATE_FORMAT_SOCRATA)
         try:

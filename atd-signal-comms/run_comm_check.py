@@ -99,11 +99,11 @@ def log_results(results):
 
 
 def validate_results(results):
-    """Validate each result row meets our schema definition.
+    """Validate each result dict meets our schema definition.
     
-        Serves as a test to ensure our schema is always adhered to. This would most likely
-        occur if a schema change was made to the source Knack container which resulted in 
-        invalid/missing data.
+        Serves as a test to ensure our schema is always adhered to. A validation error would
+        likely occur if a schema change was made to the source Knack container which resulted
+        in invalid/missing data.
 
     Args:
         results (list): list of dictionaries of the data to be upload to S3
@@ -152,7 +152,7 @@ async def main(*, device_type, env, workers):
     await asyncio.gather(*tasks, return_exceptions=True)
 
     # dictify-devices and validate data
-    results = [d.__dict__ for d in devices]
+    results = [dict(d) for d in devices]
     validate_results(results)
     log_results(results)
 
