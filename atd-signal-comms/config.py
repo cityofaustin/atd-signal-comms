@@ -18,8 +18,8 @@ CONFIG = [
         "fields": {
             "ip_address": "field_1570",
             "device_id": "field_1526",
-            "location_id": "field_732",
-            "location_name": "field_211",
+            "location_id": "field_209",
+            "location_name": "field_212",
             "knack_id": "id",
         },
     },
