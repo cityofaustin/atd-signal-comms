@@ -36,9 +36,9 @@ class Device:
         for key in self.__slots__:
             setattr(self, key, kwargs.get(key))
         # verify required fields present
-        self.raise_if_invalid()
+        self._raise_if_invalid()
         # set additional atttributes
-        self.id = self.get_id()
+        self.id = self._get_id()
         self.status_code = 0
 
     async def ping(self):
@@ -88,7 +88,7 @@ class Device:
         """
         return {s: getattr(self, s, None) for s in self.__slots__}
 
-    def raise_if_invalid(self, required_attrs=["ip_address", "device_id"]):
+    def _raise_if_invalid(self, required_attrs=["ip_address", "device_id", "device_type"]):
         """Test if the instance has minimum required fields.
 
         Raises:
@@ -102,7 +102,7 @@ class Device:
             except AttributeError:
                 raise ValueError(f"Missing required field {attr}")
 
-    def get_id(self) -> str:
+    def _get_id(self) -> str:
         """Format the ID of the comm status record
 
         Args:
@@ -112,4 +112,4 @@ class Device:
             str: the formatted record ID
         """
         now = datetime.now(timezone.utc)
-        return f"{self.device_id}_{int(now.timestamp() * 1000)}"
+        return f"{self.device_id}_{self.device_type}_{int(now.timestamp() * 1000)}"
