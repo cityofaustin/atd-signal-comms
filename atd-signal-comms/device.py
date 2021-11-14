@@ -58,7 +58,7 @@ class Device:
         self.timestamp = datetime.now(timezone.utc).strftime(DATE_FORMAT_SOCRATA)
         try:
             delay = await aioping.ping(self.ip_address, timeout=TIMEOUT) * 1000
-            self.delay = round(delay, 2)
+            self.delay = int(delay)
             self.status_code = 1
             logger.debug(f"Success: {self.ip_address} in {self.delay}ms")
         except TimeoutError:
