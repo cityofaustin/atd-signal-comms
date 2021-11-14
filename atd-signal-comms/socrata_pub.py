@@ -130,6 +130,16 @@ def download_file(client, key):
     return response["Body"].read()
 
 
+def remove_ips(rows):
+    """Remove IP address from record dicts
+
+    Args:
+        results (list): list of dictionaries of the data to be upload to S3
+    """
+    for d in rows:
+        d.pop("ip_address")
+
+
 def main(device_type, env, start, end):
     date_min = parse_date(start, DATE_FORMAT_FILE)
     date_max = parse_date(end, DATE_FORMAT_FILE)
@@ -169,6 +179,7 @@ def main(device_type, env, start, end):
     for key in files_to_download:
         json_file = download_file(client, key)
         rows = json.loads(json_file.decode())
+        remove_ips(rows)
         logger.debug(f"Upserting {key} to Socrata...")
         socrata_client.upsert(resource_id, rows)
 
