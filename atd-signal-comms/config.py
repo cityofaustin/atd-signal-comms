@@ -14,7 +14,7 @@ CONFIG = [
     },
     {
         "device_type": "detector",
-        "container": "view_3060",
+        "container": "view_1333",
         "fields": {
             "ip_address": "field_1570",
             "device_id": "field_1526",
