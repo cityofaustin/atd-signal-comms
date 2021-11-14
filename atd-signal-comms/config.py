@@ -3,7 +3,7 @@ from settings import STATUS_CODES
 CONFIG = [
     {
         "device_type": "camera",
-        "container": "view_3059",
+        "container": "view_395",
         "fields": {
             "ip_address": "field_638",
             "device_id": "field_947",
