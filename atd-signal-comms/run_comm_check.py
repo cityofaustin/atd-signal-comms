@@ -160,7 +160,7 @@ async def main(*, device_type, env, workers):
     await asyncio.gather(*tasks, return_exceptions=True)
 
     # dictify-devices and validate data
-    results = [dict(d) for d in devices]
+    results = [d.__dict__ for d in devices]
     validate_results(results)
     log_results(results)
 
