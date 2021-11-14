@@ -12,6 +12,7 @@ import os
 
 
 import boto3
+import knackpy
 from pypgrest import Postgrest
 
 from device import Device
@@ -61,7 +62,7 @@ def construct_device(device, device_type, fields):
     """Create a Device instance
 
     Args:
-        device (Knackpy.Record): A Knackpy.Record instance with device asset data
+        device (ditc): a dict of knack device asset data
         device_type (str): The device type
         fields (dict): a dict of field mappings use to replace knack field names with
             humanized names (see config.py)
@@ -77,18 +78,18 @@ def construct_device(device, device_type, fields):
     return Device(**device_kwargs)
 
 
-def get_device_records(container):
+def get_device_records(container, postgrest):
     """Fetch device asset records from Knack
 
     Args:
         container (str): a Knack object or view key
+        postgrest (pypgrest.Postgrest): a Postgrest client
 
     Returns:
         list: a list of Knackpy.records
     """
     logger.debug("Getting records from knack-postgrest...")
-    client = Postgrest(PGREST_ENDPOINT, token=PGREST_JWT)
-    records = client.select(
+    records = postgrest.select(
         resource="knack",
         params={
             "select": "record",
@@ -98,6 +99,48 @@ def get_device_records(container):
         },
     )
     return [r.get("record") for r in records]
+
+
+def get_knack_metadata(postgrest):
+    """Download knack metadata from postgrest. Need this in order to format Knack record values
+        with Knackpy.
+
+    Args:
+        postgrest (pypgrest.Postgrest): a postgrest client
+
+    Returns:
+        dict: the app's metadata
+    """
+    logger.debug("Getting Knack metadata...")
+    metadata_record = postgrest.select(
+        resource="knack_metadata",
+        params={"app_id": f"eq.{KNACK_APP_ID}", "limit": 1},
+        pagination=False,
+    )
+    return metadata_record[0]["metadata"]
+
+
+def format_device_records(records, container, metadata):
+    """Format knack record values.
+
+    Without this, we may have non-humanized values for records. E.g. the raw location_name
+        field typically has html markup—an artifact of Knack connection fields.
+
+    Args:
+        records (list): a list of knackpy.Records
+        container (str): the Knack source container (object or view key)
+        metadata (dict): the Knack app's metadata
+
+    Returns:
+        list: a list of knack record's with formatted values
+    """
+    logger.debug("Formatting Knack record values...")
+    # create our knack app and load metadata (this avoids a Knack api call)
+    app = knackpy.App(app_id=KNACK_APP_ID, metadata=metadata)
+    # load our records into the app
+    app.data[container] = records
+    # call record.get() to make use of knackpy's formatting features
+    return [record.format(keys=False) for record in app.get(container)]
 
 
 def log_results(results):
@@ -127,8 +170,15 @@ def validate_results(results):
 
 async def main(*, device_type, env, workers):
     config = next(d for d in CONFIG if d["device_type"] == device_type)
-    device_records = get_device_records(config["container"])
-
+    
+    # fetch and format knack records
+    postgrest = Postgrest(PGREST_ENDPOINT, token=PGREST_JWT)
+    container = config['container']
+    device_records_raw = get_device_records(container, postgrest)
+    knack_metadata = get_knack_metadata(postgrest)
+    device_records = format_device_records(device_records_raw, container, knack_metadata)
+    breakpoint()
+    # construct Device instances
     devices = []
     for d in device_records:
         try:
