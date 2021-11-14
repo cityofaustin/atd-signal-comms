@@ -1,6 +1,6 @@
 aioping==0.3.*
 boto3==1.19.*
 cerberus==1.3.*
-knackpy==1.1*
+knackpy==1.0.*
 pypgrest==0.1.*
 sodapy==2.1.*
