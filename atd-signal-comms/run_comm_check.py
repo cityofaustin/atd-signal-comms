@@ -170,14 +170,16 @@ def validate_results(results):
 
 async def main(*, device_type, env, workers):
     config = next(d for d in CONFIG if d["device_type"] == device_type)
-    
+
     # fetch and format knack records
     postgrest = Postgrest(PGREST_ENDPOINT, token=PGREST_JWT)
-    container = config['container']
+    container = config["container"]
     device_records_raw = get_device_records(container, postgrest)
     knack_metadata = get_knack_metadata(postgrest)
-    device_records = format_device_records(device_records_raw, container, knack_metadata)
-    breakpoint()
+    device_records = format_device_records(
+        device_records_raw, container, knack_metadata
+    )
+
     # construct Device instances
     devices = []
     for d in device_records:
