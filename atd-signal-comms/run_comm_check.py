@@ -6,22 +6,21 @@ import argparse
 import asyncio
 from collections import Counter
 from datetime import datetime, timezone
-import io
 import json
 import logging
 import os
 
 
 import boto3
-import knackpy
+from pypgrest import Postgrest
 
 from device import Device
 from config import CONFIG
 from settings import MAX_ATTEMPTS, NUM_WORKERS_DEFAULT
 import utils
 
-
-KNACK_API_KEY = os.getenv("KNACK_API_KEY")
+PGREST_JWT = os.getenv("PGREST_JWT")
+PGREST_ENDPOINT = os.getenv("PGREST_ENDPOINT")
 KNACK_APP_ID = os.getenv("KNACK_APP_ID")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
@@ -87,9 +86,18 @@ def get_device_records(container):
     Returns:
         list: a list of Knackpy.records
     """
-    logger.debug("Getting records from Knack...")
-    app = knackpy.App(app_id=KNACK_APP_ID, api_key=KNACK_API_KEY)
-    return app.get(container)
+    logger.debug("Getting records from knack-postgrest...")
+    client = Postgrest(PGREST_ENDPOINT, token=PGREST_JWT)
+    records = client.select(
+        resource="knack",
+        params={
+            "select": "record",
+            "app_id": f"eq.{KNACK_APP_ID}",
+            "container_id": f"eq.{container}",
+            "order": "updated_at",
+        },
+    )
+    return [r.get("record") for r in records]
 
 
 def log_results(results):
