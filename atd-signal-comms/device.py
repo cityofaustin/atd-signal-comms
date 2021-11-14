@@ -4,8 +4,7 @@ import socket
 
 import aioping
 
-from config import DATE_FORMAT_SOCRATA, STATUS_CODES
-from settings import TIMEOUT
+from settings import TIMEOUT, DATE_FORMAT_SOCRATA, STATUS_CODES
 
 logger = logging.getLogger("__main__")
 
