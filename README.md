@@ -20,7 +20,7 @@ The basic flow is managed by two scripts.
 
 ### Device comm status check (`run_comm_check.py`)
 
-1. Device asset records are downloaded from ATD's Knack-based asset management system.
+1. Device asset records are downloaded from ATD's Knack data store via [atd-knack-services](https://github.com/cityofaustin/atd-knack-services).
 2. Devices are pinged asynchronously and the outcome is stored in-memory
 3. Once all devicess have been pinged, the results are uploaded as a JSON blob to S3.
 4. Records are stored in S3 using the path pattern `/<environment>/<device-type>/<year>/<month>/YYYY-MM-DD.json`
@@ -80,8 +80,9 @@ The following environment variables are required:
 - `AWS_ACCESS_KEY_ID`: The AWS access key ID
 - `AWS_SECRET_ACCESS_KEY`: The AWS access key secret
 - `BUCKET`: The S3 bucket name
-- `KNACK_APP_ID`: The Knack App ID of the application you need to access
-- `KNACK_API_KEY`: The Knack API key of the application you need to access
+- `KNACK_APP_ID`: The Knack App ID of source Knack the application (the AMD Data Tracker)
+- `PGREST_JWT`: The PostgREST token for [atd-knack-services](https://github.com/cityofaustin/atd-knack-services) instance
+- `PGREST_ENDPOINT`: The PostgREST endpoint for fetching device records, powered by [atd-knack-services](https://github.com/cityofaustin/atd-knack-services).
 - `SOCRATA_API_KEY_ID`: The Socrata API key of the account you need to access
 - `SOCRATA_API_KEY_SECRET`: The Socrata API key secret
 - `SOCRATA_APP_TOKEN`: The Socrata app token
@@ -120,6 +121,8 @@ $ run_comm_check.py camera -e dev -w 100 -v
 - `-v`, `--verbose`: Sets logger to `DEBUG` level
 
 ### socrata_pub.py
+
+Download files from S3 and published to Socrata.
 
 ```shell
 $ socrata_pub.py camera -e dev --start 2021-01-01 --end 2021-10-31 -v
