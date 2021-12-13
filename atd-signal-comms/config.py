@@ -7,9 +7,10 @@ CONFIG = [
         "fields": {
             "ip_address": "field_638",
             "device_id": "field_947",
-            "location_id": "field_732",
+            "location_id": "field_642",
             "location_name": "field_211",
             "knack_id": "id",
+            "signal_id": "field_199",
         },
     },
     {
@@ -21,6 +22,7 @@ CONFIG = [
             "location_id": "field_209",
             "location_name": "field_212",
             "knack_id": "id",
+            "signal_id": "field_1579",
         },
     },
 ]
@@ -41,14 +43,8 @@ SCHEMA = {
     },
     "location_name": {"type": "string", "nullable": True},
     "location_id": {"type": "string", "nullable": True},
-    "status_code": {
-        "type": "integer",
-        "allowed": STATUS_CODES.keys()
-    },
-    "status_desc": {
-        "type": "string",
-        "allowed": STATUS_CODES.values()
-    },
+    "status_code": {"type": "integer", "allowed": STATUS_CODES.keys()},
+    "status_desc": {"type": "string", "allowed": STATUS_CODES.values()},
     "delay": {"type": "integer", "nullable": True},
     "timestamp": {
         "type": "string",
@@ -56,4 +52,5 @@ SCHEMA = {
     "device_type": {
         "type": "string",
     },
+    "signal_id": {"type": ["integer", "string"], "nullable": True},
 }
