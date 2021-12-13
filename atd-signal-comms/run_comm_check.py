@@ -17,7 +17,7 @@ from pypgrest import Postgrest
 
 from device import Device
 from config import CONFIG
-from settings import MAX_ATTEMPTS, NUM_WORKERS_DEFAULT
+from settings import MAX_ATTEMPTS, NUM_WORKERS_DEFAULT, TIMEOUT_DEFAULT
 import utils
 
 PGREST_JWT = os.getenv("PGREST_JWT")
@@ -58,7 +58,7 @@ async def worker(queue):
         queue.task_done()
 
 
-def construct_device(device, device_type, fields):
+def construct_device(device, device_type, fields, timeout):
     """Create a Device instance
 
     Args:
@@ -75,6 +75,7 @@ def construct_device(device, device_type, fields):
     """
     device_kwargs = {key: device.get(value) for key, value in fields.items()}
     device_kwargs["device_type"] = device_type
+    device_kwargs["timeout"] = timeout
     return Device(**device_kwargs)
 
 
@@ -144,8 +145,8 @@ def format_device_records(records, container, metadata):
 
 
 def log_results(results):
-    results = Counter([d["status_desc"] for d in results])
-    logger.info(dict(results))
+    results_counted = Counter([d["status_desc"] for d in results])
+    logger.info(dict(results_counted))
     return
 
 
@@ -168,7 +169,7 @@ def validate_results(results):
             raise ValueError(f"Row failed validation: {v.errors}")
 
 
-async def main(*, device_type, env, workers):
+async def main(*, device_type, env, workers, timeout):
     config = next(d for d in CONFIG if d["device_type"] == device_type)
 
     # fetch and format knack records
@@ -184,7 +185,7 @@ async def main(*, device_type, env, workers):
     devices = []
     for d in device_records:
         try:
-            device = construct_device(d, device_type, config["fields"])
+            device = construct_device(d, device_type, config["fields"], timeout)
         except ValueError:
             # raised if required fields (ip_address, device_id) are missing or None
             continue
@@ -245,6 +246,15 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "-t",
+        "--timeout",
+        type=int,
+        default=TIMEOUT_DEFAULT,
+        help=f"Ping timeout in seconds",
+    )
+
+
+    parser.add_argument(
         "-w",
         "--workers",
         type=int,
@@ -266,4 +276,4 @@ if __name__ == "__main__":
         level=logging.DEBUG if args.verbose else logging.INFO,
     )
 
-    asyncio.run(main(device_type=args.device_type, env=args.env, workers=args.workers))
+    asyncio.run(main(device_type=args.device_type, env=args.env, workers=args.workers, timeout=args.timeout))

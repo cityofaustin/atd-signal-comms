@@ -4,28 +4,14 @@ import socket
 
 import aioping
 
-from settings import TIMEOUT, DATE_FORMAT_SOCRATA, STATUS_CODES
+from settings import DATE_FORMAT_SOCRATA, STATUS_CODES
+from config import SCHEMA
 
 logger = logging.getLogger("__main__")
 
 
 class Device:
     """A container for a single http-enabled device."""
-
-    __slots__ = [
-        "id",
-        "ip_address",
-        "device_id",
-        "knack_id",
-        "location_name",
-        "location_id",
-        "status_code",
-        "status_desc",
-        "delay",
-        "timestamp",
-        "device_type",
-    ]
-
     def __repr__(self):
         return f"<{self.device_type} '{self.ip_address}'>"
 
@@ -33,8 +19,8 @@ class Device:
         """Initialize device. Kwargs unknown to __slots__ are ignored, all others are set
         as instance attributes
         """
-        for key in self.__slots__:
-            setattr(self, key, kwargs.get(key))
+        for k, v in kwargs.items():
+            setattr(self, k, v)
         # verify required fields present
         self._raise_if_invalid()
         # set additional atttributes
@@ -57,7 +43,7 @@ class Device:
         logger.debug(f"Ping {self.ip_address}")
         self.timestamp = datetime.now(timezone.utc).strftime(DATE_FORMAT_SOCRATA)
         try:
-            delay = await aioping.ping(self.ip_address, timeout=TIMEOUT) * 1000
+            delay = await aioping.ping(self.ip_address, timeout=self.timeout) * 1000
             self.delay = int(delay)
             self.status_code = 1
             logger.debug(f"Success: {self.ip_address} in {self.delay}ms")
@@ -73,22 +59,24 @@ class Device:
             self.status_code = -3
             pass
         self.status_desc = STATUS_CODES[self.status_code]
-        self.status_code < 0 and logger.warning(f"Ping failed with code {self.status_code}: {self.status_desc}")
+        self.status_code < 0 and logger.warning(
+            f"Ping failed with code {self.status_code}: {self.status_desc}"
+        )
         return self.status_code
 
     @property
     def __dict__(self):
-        """Return a dict of instance properties.
-
-        Because the use of __slots__ blocks the native use of __dict__ we have to implement
-        this manually.
+        """Return a dict of instance properties. Only return keys defined in schema, which
+        allows us to exclude extra instance properties, .e.g timeout.
 
         Returns:
             dict: instance properties
         """
-        return {s: getattr(self, s, None) for s in self.__slots__}
+        return {s: getattr(self, s, None) for s in SCHEMA.keys()}
 
-    def _raise_if_invalid(self, required_attrs=["ip_address", "device_id", "device_type"]):
+    def _raise_if_invalid(
+        self, required_attrs=["ip_address", "device_id", "device_type"]
+    ):
         """Test if the instance has minimum required fields.
 
         Raises:
