@@ -97,7 +97,7 @@ The following settings are defined in `settings.py`:
 
 - `MAX_ATTEMPTS` (`int`): The maximum number of attempts to ping a device before giving up.
 - `NUM_WORKERS_DEFAULT` (`int`): The default number of concurrent workers.
-- `TIMEOUT` (`int`): The ping timeout in seconds
+- `TIMEOUT` (`int`): The default ping timeout in seconds. Can be overwritten with CLI arg
 - `SOCRATA_RESOURCE_ID` (`str`): The unique ID of the destination Socrata dataset
 
 ## Usage
@@ -117,6 +117,7 @@ $ run_comm_check.py camera -e dev -w 100 -v
 #### Optional arguments:
 
 - `-e`, `--env`: The environment name (`dev` or `prod`). Defaults to `dev`.
+- `-t`, `--timeout`:The ping timeout in seconds. Defaults to `settings.TIMEOUT_DEFAULT`.
 - `-w`, `--workers`: The number of concurrent workers which will ping devices. Defaults to `settings.NUM_OF_WORKERS`.
 - `-v`, `--verbose`: Sets logger to `DEBUG` level
 
