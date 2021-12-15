@@ -60,7 +60,7 @@ class Device:
             pass
         self.status_desc = STATUS_CODES[self.status_code]
         self.status_code < 0 and logger.warning(
-            f"Ping failed with code {self.status_code}: {self.status_desc}"
+            f"Ping {self.ip_address} failed with code {self.status_code}: {self.status_desc}"
         )
         return self.status_code
 
