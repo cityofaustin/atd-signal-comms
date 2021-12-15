@@ -16,9 +16,6 @@ class Device:
         return f"<{self.device_type} '{self.ip_address}'>"
 
     def __init__(self, **kwargs):
-        """Initialize device. Kwargs unknown to __slots__ are ignored, all others are set
-        as instance attributes
-        """
         for k, v in kwargs.items():
             setattr(self, k, v)
         # verify required fields present
