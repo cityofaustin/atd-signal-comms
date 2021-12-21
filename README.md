@@ -2,7 +2,7 @@
 
 The Austin Transportation Department manages thousands of IP-enabled devices which enable traffic signal operations. Devices include traffic cameras, battery backup systems, signal controllers, and vehicle detectors.
 
-This repository hosts tools for logging the status of the various devices on the traffic signals network and publishing these records to the City's [Open Data Portal](data.austintexas.gov) so that they can be incorprated into reporting and analysis tools.
+This repository hosts tools for logging the status of the various devices on the traffic signals network and publishing these records to a [public dataset](https://data.austintexas.gov/Transportation-and-Mobility/Traffic-Signal-Network-Device-Status-Log/pj7k-98z2/data) so that they can be incorprated into reporting and analysis tools.
 
 ## Contents
 
