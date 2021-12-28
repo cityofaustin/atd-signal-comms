@@ -26,7 +26,7 @@ CONFIG = [
         },
     },
     {
-        "device_type": "digial_message_sign",
+        "device_type": "digital_message_sign",
         "container": "view_1564",
         "fields": {
             "ip_address": "field_1653",
