@@ -36,6 +36,20 @@ CONFIG = [
             "knack_id": "id",
         },
     },
+    {
+        "device_type": "cabinet_battery_backup",
+        "container": "view_1567",
+        "fields": {
+            "ip_address": "field_3525",
+            "device_id": "field_1789",
+            # cabinets are not connected to a "locations" object record
+            # there is no ATD_LOCATION_ID field. so just use device id
+            "location_id": "field_1789",
+            "location_name": "field_4128",
+            "knack_id": "id",
+            "signal_id": "field_1798",
+        },
+    },
 ]
 
 
