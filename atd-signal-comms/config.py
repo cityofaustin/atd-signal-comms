@@ -25,6 +25,17 @@ CONFIG = [
             "signal_id": "field_1579",
         },
     },
+    {
+        "device_type": "digial_message_sign",
+        "container": "view_1564",
+        "fields": {
+            "ip_address": "field_1653",
+            "device_id": "field_1639",
+            "location_id": "field_732",
+            "location_name": "field_211",
+            "knack_id": "id",
+        },
+    },
 ]
 
 
