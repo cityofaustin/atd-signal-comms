@@ -24,7 +24,7 @@ SOCRATA_TOKEN = os.getenv("SOCRATA_TOKEN")
 
 def get_socrata_client():
     return sodapy.Socrata(
-        "data.austintexas.gov",
+        "datahub.austintexas.gov",
         SOCRATA_TOKEN,
         username=SOCRATA_USER,
         password=SOCRATA_PW,
